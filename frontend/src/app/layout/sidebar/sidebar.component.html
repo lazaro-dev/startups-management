@@ -1,0 +1,84 @@
+@if (isOpen()) {
+  <button
+    type="button"
+    class="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm lg:hidden"
+    aria-label="Fechar menu"
+    (click)="closeMenu()"
+  ></button>
+}
+
+<aside
+  class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-slate-900 text-white shadow-xl transition-transform duration-300 ease-in-out lg:translate-x-0"
+  [class.-translate-x-full]="!isOpen()"
+  [attr.aria-hidden]="!isOpen() ? 'true' : null"
+>
+  <div class="flex h-20 shrink-0 items-center justify-between border-b border-white/10 px-5">
+    <a
+      routerLink="/dashboard"
+      (click)="closeMenu()"
+      class="flex items-center gap-3"
+      aria-label="Startup Platform - início"
+    >
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500 text-xl font-bold">
+        S
+      </div>
+
+      <div>
+        <h1 class="font-bold tracking-tight">Startup Platform</h1>
+        <p class="text-xs text-slate-400">Plataforma de gestão</p>
+      </div>
+    </a>
+
+    <button
+      type="button"
+      class="rounded-lg p-2 text-slate-400 transition hover:bg-white/10 hover:text-white lg:hidden"
+      aria-label="Fechar menu"
+      (click)="closeMenu()"
+    >
+      ✕
+    </button>
+  </div>
+
+  <nav
+    aria-label="Navegação principal"
+    class="flex-1 space-y-1 overflow-y-auto px-3 py-6"
+  >
+    <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
+      Menu principal
+    </p>
+
+    @for (item of visibleItems(); track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="bg-blue-600 text-white shadow-sm"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMenu()"
+        class="group flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
+      >
+        <span
+          aria-hidden="true"
+          class="flex w-5 shrink-0 justify-center text-lg"
+        >
+          {{ item.icon }}
+        </span>
+
+        <span class="flex-1">{{ item.label }}</span>
+
+        @if (item.badge) {
+          <span class="rounded bg-white/10 px-2 py-0.5 text-[10px] font-medium text-slate-300">
+            {{ item.badge }}
+          </span>
+        }
+      </a>
+    } @empty {
+      <p class="px-3 py-4 text-sm text-slate-400">
+        Nenhuma opção disponível para este perfil.
+      </p>
+    }
+  </nav>
+
+  <div class="shrink-0 border-t border-white/10 p-4">
+    <p class="text-xs text-slate-400">Ambiente acadêmico</p>
+    <p class="mt-1 text-sm font-medium">Startup Platform</p>
+  </div>
+</aside>
