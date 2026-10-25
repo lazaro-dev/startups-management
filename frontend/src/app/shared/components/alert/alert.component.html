@@ -1,0 +1,19 @@
+
+<div
+  [class]="alertClasses"
+  [attr.role]="variant() === 'error' ? 'alert' : 'status'"
+  aria-live="polite"
+>
+  <p>{{ message() }}</p>
+
+  @if (dismissible()) {
+    <button
+      type="button"
+      aria-label="Fechar mensagem"
+      class="shrink-0 text-lg font-bold leading-none opacity-70 hover:opacity-100"
+      (click)="dismiss.emit()"
+    >
+      ×
+    </button>
+  }
+</div>
