@@ -1,0 +1,70 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/50 p-4 backdrop-blur-sm"
+    (click)="cancel.emit()" (keydown.escape)="cancel.emit()">
+    <section role="dialog" aria-modal="true" aria-labelledby="estado-form-title"
+        class="my-auto w-full max-w-lg rounded-2xl bg-white shadow-2xl" (click)="$event.stopPropagation()">
+        <div class="flex items-start justify-between border-b border-slate-100 px-6 py-5">
+            <div>
+                <h2 id="estado-form-title" class="text-xl font-bold text-slate-900">
+                    {{ estado ? 'Editar Estado' : 'Novo Estado' }}
+                </h2>
+                <p class="mt-1 text-sm text-slate-500">
+                    Preencha os dados do estado.
+                </p>
+            </div>
+
+            <button type="button" (click)="cancel.emit()"
+                class="rounded-lg px-2 py-1 text-2xl leading-none text-slate-400 hover:bg-slate-100"
+                aria-label="Fechar">
+                ×
+            </button>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <div class="space-y-5 px-6 py-6">
+                <div>
+                    <label for="uf" class="mb-2 block text-sm font-semibold text-slate-700">
+                        UF <span class="text-red-500">*</span>
+                    </label>
+
+                    <input id="uf" formControlName="uf" maxlength="2" placeholder="Ex.: BA" (input)="normalizeUf()"
+                        class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm uppercase outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100"
+                        [class.border-red-400]="isInvalid('uf')" />
+
+                    @if (isInvalid('uf')) {
+                    <p class="mt-1 text-xs text-red-600">
+                        Informe uma UF com exatamente duas letras.
+                    </p>
+                    }
+                </div>
+
+                <div>
+                    <label for="description" class="mb-2 block text-sm font-semibold text-slate-700">
+                        Descrição <span class="text-red-500">*</span>
+                    </label>
+
+                    <input id="description" formControlName="description" maxlength="40" placeholder="Ex.: Bahia"
+                        class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        [class.border-red-400]="isInvalid('description')" />
+
+                    @if (isInvalid('description')) {
+                    <p class="mt-1 text-xs text-red-600">
+                        Informe uma descrição com até 40 caracteres.
+                    </p>
+                    }
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 border-t border-slate-100 px-6 py-5">
+                <button type="button" (click)="cancel.emit()" [disabled]="isSaving"
+                    class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50">
+                    Cancelar
+                </button>
+
+                <button type="submit" [disabled]="isSaving"
+                    class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
+                    {{ isSaving ? 'Salvando...' : 'Salvar' }}
+                </button>
+            </div>
+        </form>
+    </section>
+</div>

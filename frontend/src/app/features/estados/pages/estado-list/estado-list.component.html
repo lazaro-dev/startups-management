@@ -1,0 +1,103 @@
+<div>
+  <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+    <div>
+      <div class="flex items-center gap-3">
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-2xl text-blue-700"
+        >
+          ⌖
+        </div>
+
+        <div>
+          <h1 class="text-3xl font-bold tracking-tight text-slate-900">Estados</h1>
+          <p class="mt-1 text-sm text-slate-500">
+            Gerencie os estados brasileiros cadastrados no sistema.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <ui-button (clicked)="openCreateModal()">
+      <span class="text-xl leading-none">+</span>
+      Novo Estado
+    </ui-button>
+  </div>
+
+  @if (successMessage()) {
+    <ui-alert
+      variant="success"
+      [message]="successMessage()"
+      [dismissible]="true"
+      (dismiss)="successMessage.set('')"
+    />
+  }
+
+  @if (errorMessage()) {
+    <ui-alert
+      variant="error"
+      [message]="errorMessage()"
+      [dismissible]="true"
+      (dismiss)="errorMessage.set('')"
+    />
+  }
+
+  <section class="mt-5 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div class="border-b border-slate-200 p-4 sm:p-5">
+      <label for="estado-search" class="sr-only"> Pesquisar estados </label>
+
+      <div class="relative max-w-md">
+        <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+          ⌕
+        </span>
+
+        <input
+          id="estado-search"
+          type="search"
+          [value]="searchTerm()"
+          (input)="onSearch($any($event.target).value)"
+          placeholder="Pesquisar por UF ou nome..."
+          class="w-full rounded-lg border border-slate-300 py-2.5 pl-9 pr-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+      </div>
+    </div>
+
+    <ui-table
+      [columns]="columns"
+      [items]="filteredStates()"
+      [loading]="isLoading()"
+      rowKey="uf"
+      [withoutCardWrapper]="true"
+    >
+      <ng-template uiTableCell="actions" let-item>
+        <ui-button size="sm" variant="secondary" (clicked)="openEditModal(item)">
+          Editar
+        </ui-button>
+        <ui-button size="sm" variant="danger" class="ml-1" (clicked)="deleteEstado(item)">
+          Excluir
+        </ui-button>
+      </ng-template>
+    </ui-table>
+
+    @if (!isLoading()) {
+      <div
+        class="flex flex-col gap-2 border-t border-slate-200 px-6 py-4 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <span>
+          {{ filteredStates().length }}
+          {{ filteredStates().length === 1 ? 'estado encontrado' : 'estados encontrados' }}
+        </span>
+
+        <!-- <span>Dados carregados </span> -->
+      </div>
+    }
+  </section>
+</div>
+
+@if (isModalOpen()) {
+  <app-estado-form
+    [estado]="editingEstado()"
+    [isSaving]="isSaving()"
+    (save)="saveEstado($event)"
+    (cancel)="closeModal()"
+  />
+}
