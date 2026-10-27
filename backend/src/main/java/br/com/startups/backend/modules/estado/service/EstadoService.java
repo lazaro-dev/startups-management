@@ -1,10 +1,9 @@
 package br.com.startups.backend.modules.estado.service;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
+import br.com.startups.backend.exceptions.EstadoNotFoundException;
 import br.com.startups.backend.modules.estado.dto.EstadoDTO;
 import br.com.startups.backend.modules.estado.dto.EstadoRequestDTO;
 import br.com.startups.backend.modules.estado.entity.Estado;
@@ -39,9 +38,8 @@ public class EstadoService {
         String uf = normalizeUf(request.uf());
 
         if (estadoRepository.existsById(uf)) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "A state with UF " + uf + " already exists.");
+            throw new EstadoNotFoundException(
+                    "Um estado com UF " + uf + " já existe.");
         }
 
         Estado estado = new Estado(uf, request.description().trim());
@@ -55,9 +53,8 @@ public class EstadoService {
         String requestUf = normalizeUf(request.uf());
 
         if (!normalizedUf.equals(requestUf)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "The UF in the URL must match the UF in the request body.");
+            throw new EstadoNotFoundException(
+                    "A UF na URL deve corresponder à UF no corpo da requisição.");
         }
 
         Estado estado = getEstadoOrThrow(normalizedUf);
@@ -74,9 +71,8 @@ public class EstadoService {
 
     private Estado getEstadoOrThrow(String uf) {
         return estadoRepository.findById(uf)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "State with UF " + uf + " was not found."));
+                .orElseThrow(() -> new EstadoNotFoundException(
+                        "Estado com UF " + uf + " não foi encontrado."));
     }
 
     private String normalizeUf(String uf) {

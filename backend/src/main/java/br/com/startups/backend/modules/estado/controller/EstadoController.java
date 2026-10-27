@@ -6,6 +6,7 @@ import br.com.startups.backend.modules.estado.service.EstadoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EstadoController {
 
+    @Autowired
     private final EstadoService estadoService;
 
     @GetMapping
@@ -36,9 +38,8 @@ public class EstadoController {
 
     @PutMapping("/{uf}")
     public EstadoDTO update(
-        @PathVariable String uf,
-        @Valid @RequestBody EstadoRequestDTO request
-    ) {
+            @PathVariable String uf,
+            @Valid @RequestBody EstadoRequestDTO request) {
         return estadoService.update(uf, request);
     }
 
