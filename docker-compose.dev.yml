@@ -56,6 +56,13 @@ services:
     networks:
       - startup-network
 
+  adminer:
+    image: adminer
+    ports:
+      - "9090:8080"
+    networks:
+      - startup-network
+      
 volumes:
   postgres-data:
   maven-cache:

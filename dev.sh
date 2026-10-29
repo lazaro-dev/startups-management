@@ -22,7 +22,7 @@ elif [ "$1" = "-logs" ]; then
 
 else
    echo "Uso:"
-   echo "  -u    sobe containers"
+   echo "  -u    up containers"
    echo "  -d    down"
    echo "  -dv   down com volumes"
    echo "  -b    build service"

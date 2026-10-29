@@ -2,27 +2,25 @@
 
 Plataforma web para gestão de startups, desenvolvida como projeto acadêmico para a disciplina de **Engenharia de Software II**.
 
-O projeto tem como objetivo aplicar na prática os conceitos de engenharia de software, desenvolvimento full stack, organização modular, integração entre frontend e backend e gerenciamento de dados.
+O projeto tem como objetivo aplicar na prática conceitos de engenharia de software, desenvolvimento full stack, organização modular, integração entre frontend e backend e gerenciamento de dados.
 
 ## Tecnologias utilizadas
 
 ### Frontend
-
 - **Angular** — desenvolvimento da interface web.
 - **TypeScript** — linguagem de programação.
 - **Tailwind CSS** — estilização dos componentes.
 
 ### Backend
-
 - **Java** — linguagem de programação.
 - **Spring Boot** — desenvolvimento da API REST.
 - **Maven** — gerenciamento de dependências e build.
 
 ### Banco de dados e infraestrutura
-
-- **PostgreSQL** — banco de dados relacional.
+- **PostgreSQL 16** — banco de dados relacional.
 - **Docker** — containerização dos serviços.
 - **Docker Compose** — orquestração do ambiente de desenvolvimento.
+- **Adminer** — interface web para administração do banco de dados.
 
 ## Pré-requisitos
 
@@ -30,22 +28,13 @@ Antes de executar o projeto, certifique-se de que as seguintes ferramentas estã
 
 - [Git](https://git-scm.com/) — para clonar o repositório.
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) — para executar os containers.
-- Docker Compose — disponível integrado ao Docker Desktop nas versões atuais.
+- Docker Compose — incluído nas versões atuais do Docker Desktop.
 
-Não é necessário instalar Java, Maven, Node.js ou Angular CLI diretamente na máquina caso todos esses serviços sejam executados pelos containers configurados no projeto.
+Para executar o script `dev.sh` no Windows, também será necessário utilizar o **Git Bash** ou o **WSL**.
 
-> **Importante:** a execução depende das configurações presentes nos arquivos Docker do repositório. Caso algum serviço seja executado diretamente na máquina, suas respectivas ferramentas e versões compatíveis também serão necessárias.
+Não é necessário instalar Java, Maven, Node.js ou Angular CLI diretamente na máquina, pois essas ferramentas são disponibilizadas pelos containers configurados no projeto.
 
 ## Como executar o projeto
-
-### Pré-requisitos
-
-Antes de iniciar, certifique-se de ter instalado:
-
-- [Git](https://git-scm.com/) — para clonar o repositório.
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) — para executar os containers.
-- Docker Compose — incluído nas versões atuais do Docker Desktop.
-- Bash — necessário para executar o script `dev.sh`. No Windows, você pode utilizar o Git Bash ou o WSL.
 
 ### 1. Clonar o repositório
 
@@ -58,113 +47,200 @@ Substitua `<URL_DO_REPOSITORIO>` pela URL do repositório no GitHub.
 
 ### 2. Verificar os pré-requisitos
 
-Confirme se o Docker e o Docker Compose estão disponíveis:
+Execute os comandos abaixo para verificar se o Docker e o Docker Compose estão disponíveis:
 
 ```bash
 docker --version
 docker compose version
 ```
 
-Certifique-se também de que o Docker Desktop está em execução.
+Certifique-se de que o Docker Desktop esteja em execução.
 
-### 3. Configurar as variáveis de ambiente
+### 3. Configurar o ambiente
 
-Verifique as configurações do arquivo `docker-compose.dev.yml` e dos serviços para identificar se existem variáveis de ambiente obrigatórias.
+Verifique o arquivo `docker-compose.dev.yml` para consultar as configurações dos serviços e suas respectivas variáveis de ambiente.
 
-Caso o projeto utilize um arquivo `.env`, configure-o conforme os requisitos do ambiente. Não compartilhe senhas ou credenciais reais no repositório.
+Atualmente, o ambiente de desenvolvimento utiliza as seguintes credenciais para o PostgreSQL:
 
-### 4. Dar permissão de execução ao script
+| Configuração | Valor |
+|---|---|
+| Banco de dados | `startups` |
+| Usuário | `admin` |
+| Senha | `admin` |
+| Porta | `5432` |
 
-Em ambientes Linux, macOS ou WSL, execute:
+Essas credenciais são destinadas exclusivamente ao ambiente de desenvolvimento acadêmico. Não utilize essas configurações em produção.
+
+### 4. Iniciar o ambiente
+
+#### Linux, macOS, Git Bash ou WSL
+
+Caso utilize Linux, macOS ou WSL, dê permissão de execução ao script, se necessário:
 
 ```bash
 chmod +x dev.sh
 ```
 
-No Windows, utilizando Git Bash ou WSL, você também pode executar o script pelo Bash.
-
-### 5. Iniciar o ambiente de desenvolvimento
-
-Para iniciar os containers em segundo plano:
+Inicie os containers com:
 
 ```bash
 ./dev.sh -u
 ```
 
-Esse comando executa o Docker Compose com as configurações de `docker-compose.dev.yml`, inicia os serviços em segundo plano e remove containers de serviços que não estejam mais definidos na configuração.
+#### Windows — PowerShell
 
-Na primeira execução, caso as imagens necessárias ainda não existam, poderá ser necessário construí-las antes de iniciar os serviços.
+Caso prefira utilizar o PowerShell, execute o comando abaixo na raiz do projeto:
 
-### 6. Consultar os logs
-
-Para acompanhar os logs de todos os serviços:
-
-```bash
-./dev.sh -logs
+```powershell
+docker compose -f docker-compose.dev.yml up -d --remove-orphans
 ```
 
-Para acompanhar os logs de um serviço específico, informe seu nome conforme definido no `docker-compose.dev.yml`:
+Esse comando inicia os serviços em segundo plano e remove containers que não estejam mais definidos na configuração.
+
+Na primeira execução, o Docker poderá precisar baixar as imagens e construir os serviços.
+
+### 5. Acessar a aplicação
+
+Após a inicialização dos serviços, os endereços disponíveis são:
+
+| Serviço | Endereço |
+|---|---|
+| Frontend Angular | [http://localhost:4200](http://localhost:4200) |
+| Backend Spring Boot | [http://localhost:8080](http://localhost:8080) |
+| Adminer — banco de dados | [http://localhost:9090](http://localhost:9090) |
+
+O backend disponibiliza a API REST. As rotas específicas dependem dos controllers implementados no projeto.
+
+## Como acessar o banco de dados
+
+O projeto utiliza PostgreSQL executado em um container Docker. É possível acessar o banco pelo navegador, usando o Adminer, ou por uma ferramenta de gerenciamento de banco de dados, como o DBeaver.
+
+### Opção 1 — Adminer pelo navegador
+
+1. Inicie os containers do projeto.
+2. Acesse [http://localhost:9090](http://localhost:9090).
+3. Preencha o formulário de conexão com os seguintes dados:
+
+| Campo | Valor |
+|---|---|
+| Sistema | PostgreSQL |
+| Servidor | `postgres` |
+| Usuário | `admin` |
+| Senha | `admin` |
+| Banco de dados | `startups` |
+
+4. Clique em **Entrar**.
+
+**Importante:** no campo Servidor, utilize `postgres`, pois esse é o nome do serviço do banco na rede interna do Docker Compose.
+
+### Opção 2 — DBeaver ou outro cliente PostgreSQL
+
+Também é possível conectar-se ao banco diretamente pela máquina Windows utilizando um cliente compatível com PostgreSQL.
+
+No DBeaver, crie uma nova conexão PostgreSQL e informe:
+
+| Campo | Valor |
+|---|---|
+| Host | `localhost` |
+| Porta | `5432` |
+| Database | `startups` |
+| Username | `admin` |
+| Password | `admin` |
+
+Salve a conexão e clique em **Test Connection** para verificar se o acesso está funcionando.
+
+Nesse caso, utilize `localhost`, pois a porta `5432` do container PostgreSQL está publicada na máquina host.
+
+### Consultar os dados pelo terminal
+
+Também é possível abrir o terminal do PostgreSQL dentro do container:
 
 ```bash
-./dev.sh -logs backend
+docker compose -f docker-compose.dev.yml exec postgres psql -U admin -d startups
 ```
 
-Exemplo para o frontend:
+Para listar as tabelas:
 
-```bash
-./dev.sh -logs frontend
+```sql
+\dt
 ```
 
-### 7. Acessar a aplicação
+Para consultar os registros de uma tabela, por exemplo:
 
-Depois que os containers estiverem em execução, acesse os endereços configurados no `docker-compose.dev.yml`.
+```sql
+SELECT * FROM estado;
+```
 
-Os endereços podem variar conforme as portas publicadas no Docker Compose. Consulte esse arquivo para identificar as URLs do frontend e do backend.
+Substitua `estado` pelo nome da tabela que deseja consultar. Para sair do terminal do PostgreSQL, execute:
+
+```sql
+\q
+```
 
 ## Comandos disponíveis no dev.sh
 
-O projeto disponibiliza o script `dev.sh` para simplificar o gerenciamento do ambiente de desenvolvimento.
+O script `dev.sh` simplifica o gerenciamento do ambiente de desenvolvimento.
 
 | Comando | Descrição |
 |---|---|
 | `./dev.sh -u` | Inicia os containers em segundo plano. |
-| `./dev.sh -d` | Para e remove os containers do projeto. |
+| `./dev.sh -d` | Para e remove os containers. |
 | `./dev.sh -dv` | Para e remove os containers e os volumes associados. |
-| `./dev.sh -b` | Constrói a imagem de um serviço específico. |
-| `./dev.sh -bnc` | Reconstrói a imagem de um serviço sem utilizar o cache. |
+| `./dev.sh -b backend` | Constrói a imagem do backend. |
+| `./dev.sh -bnc backend` | Reconstrói a imagem do backend sem utilizar o cache. |
 | `./dev.sh -logs` | Acompanha os logs dos serviços. |
+| `./dev.sh -logs backend` | Acompanha os logs do backend. |
+| `./dev.sh -logs frontend` | Acompanha os logs do frontend. |
 
-### Reconstruir a imagem de um serviço
+Os comandos acima devem ser executados em um terminal Bash, como Git Bash ou WSL.
 
-Para construir a imagem de um serviço específico:
+### Comandos equivalentes no PowerShell
 
-```bash
-./dev.sh -b backend
+Se estiver utilizando o PowerShell no Windows, você pode executar diretamente os comandos do Docker Compose:
+
+**Iniciar os serviços:**
+
+```powershell
+docker compose -f docker-compose.dev.yml up -d --remove-orphans
 ```
 
-Para construir a imagem sem utilizar o cache:
+**Acompanhar os logs de todos os serviços:**
 
-```bash
-./dev.sh -bnc backend
+```powershell
+docker compose -f docker-compose.dev.yml logs -f
 ```
 
-Substitua `backend` pelo nome do serviço definido no arquivo `docker-compose.dev.yml`.
+**Acompanhar os logs de um serviço específico:**
 
-### Encerrar o ambiente
-
-Para parar e remover os containers:
-
-```bash
-./dev.sh -d
+```powershell
+docker compose -f docker-compose.dev.yml logs -f backend
 ```
 
-Para remover os containers e também os volumes associados:
+**Construir a imagem de um serviço:**
 
-```bash
-./dev.sh -dv
+```powershell
+docker compose -f docker-compose.dev.yml build backend
 ```
 
-**Atenção:** o comando `-dv` pode apagar os dados persistidos no banco de dados, caso estejam armazenados em volumes removidos por essa operação. Utilize-o somente quando desejar remover esses dados.
+**Construir sem utilizar o cache:**
+
+```powershell
+docker compose -f docker-compose.dev.yml build --no-cache backend
+```
+
+**Parar e remover os containers:**
+
+```powershell
+docker compose -f docker-compose.dev.yml down
+```
+
+**Parar os containers e remover os volumes:**
+
+```powershell
+docker compose -f docker-compose.dev.yml down -v
+```
+
+**Atenção:** o comando `down -v` remove os volumes associados ao ambiente, incluindo o volume `postgres-data`, que armazena os dados persistidos do PostgreSQL. Utilize-o somente quando desejar apagar esses dados.
 
 ## Estrutura do projeto
 
@@ -182,15 +258,13 @@ startups-management/
 └── dev.sh
 ```
 
-O diretório `backend` contém a API desenvolvida com Spring Boot, enquanto o diretório `frontend` contém a aplicação Angular. O arquivo `docker-compose.dev.yml` define os serviços e suas configurações, e o script `dev.sh` facilita a execução dos comandos de gerenciamento do ambiente.
+O diretório `backend` contém a API desenvolvida com Spring Boot, enquanto o diretório `frontend` contém a aplicação Angular. O arquivo `docker-compose.dev.yml` define os serviços e suas configurações, e o script `dev.sh` facilita o gerenciamento do ambiente.
 
 ## Contexto acadêmico
 
-Este projeto foi desenvolvido para fins educacionais como parte da disciplina de **Engenharia de Software II**, com o objetivo de aplicar na prática os conceitos de desenvolvimento full stack, organização modular, integração entre serviços e gerenciamento de ambientes de desenvolvimento.
+Este projeto foi desenvolvido para fins educacionais como parte da disciplina de **Engenharia de Software II**, com foco na aplicação prática dos conceitos estudados durante a graduação.
 
-## Objetivos acadêmicos
-
-Este projeto foi desenvolvido no contexto da disciplina de **Engenharia de Software II**, com foco na aplicação prática dos conceitos estudados durante a graduação, incluindo:
+### Objetivos acadêmicos
 
 - Organização e modularização de software.
 - Separação de responsabilidades entre frontend e backend.
